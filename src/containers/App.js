@@ -3,6 +3,7 @@ import './App.css';
 import Cardlist from '../components/Cardlist'
 import SearchBox from '../components/SearchBox'
 import Scroll from '../components/Scroll'
+import ErrorBoundry from '../components/ErrorBoundry'
 import axios from 'axios'
 import 'tachyons'
 
@@ -24,20 +25,23 @@ class App extends Component {
     })
   }
   render() {
-    const filteredRobots = this.state.robots.filter(robot => {
-      return robot.username.toLowerCase().includes(this.state.searchField.toLowerCase())
+    const { robots, searchField } = this.state
+    const filteredRobots = robots.filter(robot => {
+      return robot.username.toLowerCase().includes(searchField.toLowerCase())
     })
 
 
 
-    return this.state.robots.length === 0 ?
+    return robots.length === 0 ?
       <h1> Loading ...</h1> :
       (
         <div className="tc">
           <h1 className="f2">Search</h1>
           <SearchBox onSearch={this.onSearchHandler} />
           <Scroll>
-            <Cardlist robots={filteredRobots} />
+            <ErrorBoundry>
+              <Cardlist robots={filteredRobots} />
+            </ErrorBoundry>
           </Scroll>
         </div>
       );
